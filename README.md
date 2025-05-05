@@ -1,4 +1,4 @@
-# RobMOT: Robust 3D Multi-Object Tracking Framework :cite[1]:cite[2]
+# RobMOT: Robust 3D Multi-Object Tracking Framework
 
 [![arXiv](https://img.shields.io/badge/arXiv-2405.11536-b31b1b.svg)](https://arxiv.org/abs/2405.11536)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/robmot-robust-3d-multi-object-tracking-by/multiple-object-tracking-on-kitti-test-online)](https://paperswithcode.com/sota/multiple-object-tracking-on-kitti-test-online?p=robmot-robust-3d-multi-object-tracking-by)
