@@ -21,13 +21,10 @@ namespace parameters
         constexpr static const char* dataset = "training";
         constexpr static const bool  isTraining                 = true;
         constexpr static const bool  processDetectedObjectsOnly = true; // The output only for visible objects.
-        constexpr static const bool  visualization              = false;
         constexpr static const bool selectedStreamsActivation   = false; // To run specific stream/s
         constexpr static const char* selectedStreams[1]   ={"0002"};
         //TODO: Include the fill project path. The path should end by 'RobMOT/src'
         constexpr static const char* basePath  = "/EXAMPLE/RobMOT/src";
-        //TODO: Dataset directory
-        constexpr static const char* basePathDataset = "TBA";
     };
     struct MotionModel
     {
