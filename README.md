@@ -1,117 +1,159 @@
-# DFR-FastMOT: A Robust Tracker for Fast Multi-Object Tracking with Sensor Fusion
+# RobMOT: Robust 3D Multi-Object Tracking Framework :cite[1]:cite[2]
 
-Welcome to the DFR-FastMOT repository, showcasing the complete implementation of our innovative tracking model. The research is presented in [IEEE ICRA23 conference](https://ieeexplore.ieee.org/document/10160328). For those interested, the pre-print version is available on [arXiv](https://arxiv.org/abs/2302.14807).
+[![arXiv](https://img.shields.io/badge/arXiv-2405.11536-b31b1b.svg)](https://arxiv.org/abs/2405.11536)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/robmot-robust-3d-multi-object-tracking-by/multiple-object-tracking-on-kitti-test-online)](https://paperswithcode.com/sota/multiple-object-tracking-on-kitti-test-online?p=robmot-robust-3d-multi-object-tracking-by)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/robmot-robust-3d-multi-object-tracking-by/3d-multi-object-tracking-on-waymo-open-1)](https://paperswithcode.com/sota/3d-multi-object-tracking-on-waymo-open-1?p=robmot-robust-3d-multi-object-tracking-by)
 
-## Abstract
-Multi-object tracking (MOT) in dynamic environments is crucial for safe autonomous navigation. One major challenge in MOT arises when objects are occluded, rendering them temporarily invisible. Existing MOT methods store object information for recovery post-occlusion, striking a balance between memory efficiency and tracking accuracy. However, such methods often struggle with prolonged occlusions. In this paper, we propose DFR-FastMOT—a lightweight tracking method using camera and LiDAR data fusion. Our approach leverages algebraic object association and fusion, optimizing computation time and enabling long-term memory. DFR-FastMOT excels over both learning and non-learning benchmarks, surpassing them by approximately 3% and 4% in MOTA, respectively. We subject our method to extensive occlusion simulations with varying detection distortion levels, showcasing its superiority over current state-of-the-art methods. Remarkably, our framework processes 7,763 frames in just 1.48 seconds—seven times faster than recent benchmarks.
 
-[![Watch the video](https://img.youtube.com/vi/CLDxqTojz6o/0.jpg)](https://youtu.be/CLDxqTojz6o)
+<img src="docs/teaser.gif" alt="Tracking Visualization" width="800"/>
 
-## Getting Started
-Our implementation is written entirely in C++/11. To run the code on your machine, make sure to download the required libraries and dependencies. The following instructions will guide you through the setup process. For any inquiries, feel free to reach out to us using the contact details provided at the end of this documentation.
+Official implementation of "**RobMOT: Robust 3D Multi-Object Tracking by Observational Noise and State Estimation Drift Mitigation on LiDAR PointCloud**" (Online Method). 
 
-### Required Libraries
-* Minimum cmake version: 3.16
-* OpenCV 4.1
-* PCL 1.10
-* Eigen3
+## Key Features
+- 🚀 **State Estimation Refinement**: Novel Kalman Filter adaptation reduces localization noise by 4.8% HOTA
+- 👻 **Ghost Track Mitigation**: Introduces the first trajectory validity mechanism in object tracking, reduces false positives by 80%
+- ⚡ **Real-Time Performance**: 3221 FPS on single CPU - 50x faster than SOTA methods
+- 🔄 **Occlusion Handling**: Improved recovery after prolonged occlusions with uncertainty-aware tracking
+- 📊 **Multi-Detector Support**
 
-### Dataset
-DFR-FastMOT can work with various dataset formats, as long as they adhere to the [KITTI dataset](https://www.cvlibs.net/datasets/kitti/eval_tracking.php) structure for multi-object tracking. Update the `BASE_DIR` variable in the `main.cpp` file to point to your dataset directory. The dataset directory structure should match the following:
+## Benchmarks
+| Dataset       | MOTA ↑ | HOTA ↑ | IDSW ↓ |
+|---------------|--------|--------|--------|
+| KITTI Test    |91.02%  | 81.76% | 7      |
+| KITTI Val     |86.31%  | 91.53% | 1      |
+-------------------------------------------
 
-```
-/dataset
-├── Camera
-│   └── training
-│       ├── image_02
-│       │   ├── 0000
-│       │   │   ├── ...
-│       │   ├── xxxx
-│       │       ├── ...
-│       └── label_02
-│           ├── 0000
-│           │   ├── ...
-│           ├── xxxx
-│               ├── ...
-└── LiDAR
-    └── training
-        ├── velodyne
-        │   ├── 0000
-        │   │   ├── ...
-        │   ├── xxxx
-        │       ├── ...
-        └── calib
-            ├── 0000.txt
-            ├── ...
-            └── xxxx.txt
-```
+| Waymo Test (Vehicle)| MOTA/L1 ↑ | MOTA/L2 ↑ |
+|---------------|--------|--------|
+| All    |77.72%|74.66%|
+Range-[0.30)|92.17%|91.59%|
+Range-[30, 50)|78.78%|75.99%|
+Range-[50,+inf)|59.74%|55.14%|
+-------------------------------------------
 
-Make sure to update the `CURRENT_STREAM` and `BASE_DIR` variables in the `main.cpp` file accordingly.
 
-```c++
-const string CURRENT_STREAM = "0002"; // Change it base on your intented stream. In this case, it will run stream 0002 in KITTI dataset.
-const string BASE_DIR       = "/home/mohamed/Desktop/Thesis Prot/dataset/"; // Locate the dataset (BASE) directory on your machine.
-```
+## Installation
 
-### 2D/3D Detection Inputs
-DFR-FastMOT employs the `Detection Module` to conduct `YOLOv3` detection on 2D images. It projects 2D bounding boxes into the 3D point cloud to achieve 3D detection. Additionally, the model accepts external detection inputs in `.txt` format. To provide these inputs, place 2D detection files in the `src/advanced_detection/det_2d/` directory, and 3D detection files in the `src/advanced_detection/det_3d/` directory. The filenames should match the stream names in your dataset. Refer to the examples in the directories for guidance.
+### Requirements
+- **OS**: Ubuntu 20.04/22.04 (64-bit)
+- **Compiler**: GCC 13+ (C++17 required)
+- **CMake**: 3.28+
+- **Dependencies**:
+  - OpenCV 4.1+
+  - PCL 1.14+
+  - Eigen3 3.4+
 
-Sample format for 2D detections in `.txt` file:
+```bash
+# Install dependencies
+sudo apt-get install -y \
+    gcc-13 g++-13 \
+    libopencv-dev \
+    libpcl-dev \
+    libeigen3-dev
 
-| frame_id | 2d_bbox (x1,y1,x2,y2)            | score   |
-|:--------:|---------------------------------|---------|
-| 0        | 296.021,160.173,452.297,288.372 | 0.52923 |
-
-Sample format for 3D detections in `.txt` file:
-
-| frame_id | type_id | 2d_bbox (x1,y1,x2,y2)                | score   | 3d_bbox (y_max,z_max,x_max, y_min, z_min, x_min)           | rotation | alpha   |
-|:--------:|---------|-------------------------------------|---------|-----------------------------------------------------------|----------|---------|
-| 0        | 2       | 298.3125,165.1800,458.2292,293.4391 | 8.2981  | 1.9605,1.8137,4.7549,-4.5720,1.8435,13.5308             | -2.1125  | -1.7867 |
-
-### Modules Overview
-#### Association Module:
-This module orchestrates the association and fusion of tracked objects based on the methods detailed in the paper.
-#### Calibration Module:
-Responsible for projecting bounding boxes into 2D/3D sensor coordinates.
-#### Filter Module:
-Performs point cloud filters like cropping and voxel grid operations on the input point cloud.
-#### Memory Module:
-Stores object information in internal memory for subsequent utilization.
-#### Object Detection Module:
-Detects objects using the YOLOv3 model, if not provided as input. It also generates 3D detections through projection and 3D neighborhood clustering.
-#### Streamer Module:
-Simulates real-time data flow from cameras and LiDAR sensors by sequentially streaming data.
-#### Tracking Module:
-Utilizes the Kalman filter state estimation algorithm to predict the next state for all objects in memory based on constant acceleration.
-#### Visualizer Module:
-Enables real-time visualization of 2D/3D tracking outputs.
-
-### Running the Model
-Once you've completed the setup, simply execute the `main.cpp` file. This will display two windows—one for 2D camera tracking visualization and another for 3D point cloud tracking. See the example below for reference.
-
-![Visualization Example](https://github.com/wangxiyang2022/DeepFusionMOT/assets/20774864/f70065c6-fa55-45ae-aeaa-924bbb964db2)
-
-### Evaluation
-For accurate tracking output evaluation, we recommend using our evaluation repository available [HERE](https://github.com/MohamedNagyMostafa/KITTI-MOT.Bench-Evals). The tracking output adheres to the KITTI format and is stored in the `src/tracking` directory.
-
-| frame | type | truncated | occluded | alpha | 2d_bbox | 3d_dimensions | 3d_location | rotation_y | score |
-|:-----:|:----:|:---------:|:--------:|:-----:|:-------:|:------------:|:-----------:|:----------:|:-----:|
-|   0   | Car  |    0      |    0     | -1  |(255,182,0,23)|(1.24,2,3,0.9)|(2.3,5.9,1.2)|    -35    |   0   |
-
-### Citation
-If you find our implementation valuable for your research, kindly consider citing our paper:
+# Clone repository
+git clone https://github.com/yourusername/RobMOT.git
+cd RobMOT
 
 ```
-@INPROCEEDINGS{10160328,
-  author={Nagy, Mohamed and Khonji, Majid and Dias, Jorge and Javed, Sajid},
-  booktitle={2023 IEEE International Conference on Robotics and Automation (ICRA)}, 
-  title={DFR-FastMOT: Detection Failure Resistant Tracker for Fast Multi-Object Tracking Based on Sensor Fusion}, 
-  year={2023},
-  volume={},
-  number={},
-  pages={827-833},
-  doi={10.1109/ICRA48891.2023.10160328}}
+## Data Preparation
+Organize the dataset as: (**Note the code does not include visualization, you may exclude directories with "# No need with no visualization")
+```
+datasets/
+├── kitti/           
+    ├── Camera # No need with no visualization
+        ├── training 
+            ├── 0000
+            ...
+        ├── testing
+            ├── 0000
+            ...
+    ├── LiDAR
+        ├── training
+            ├── calib
+                ├── 0000.txt
+                ...
+            ├── pose
+                ├── 0000.txt
+                ...
+            ├── velodyne # No need with no visualization
+                ├── 0000
+                ...
+        ├── testing
+            ├── calib
+                ├── 0000.txt
+                ...
+            ├── pose
+                ├── 0000.txt
+                ... 
+            ├── velodyne # No need with no visualization
+                ├── 0000
+                ..
+
+├── waymo/
+    ├── Camera # No need with no visualization
+        ├── training
+            ├── 17065833287841703_2980_000_3000_000
+            ...
+        ├── testing
+            ├── 2601205676330128831_4880_000_4900_000.parquet
+            ...
+    ├── LiDAR
+        ├── training
+            ├── pose
+                ├── 17065833287841703_2980_000_3000_000.txt
+                ...
+            ├── velodyne # No need with no visualization
+                ├── 17065833287841703_2980_000_3000_000
+                ...
+        ├── testing
+            ├── pose
+                ├── 17065833287841703_2980_000_3000_000.txt
+                ...
+            ├── velodyne # No need with no visualization
+                ├── 17065833287841703_2980_000_3000_000
+                ...
 ```
 
-### Contact Us
-For inquiries related to the paper or the implementation, feel free to reach out to us at: mohamed.nagy@ieee.org
+## Configuration
+All directories should be set up correctly to avoid issues when running the software. **Please note all detector data are in folder `advanced_detection`**.
+
+**`config/config.cpp`**
+```cpp
+        //TODO: Include the fill project path. The path should end by 'RobMOT/src'
+        constexpr static const char* basePath  = "/EXAMPLE/RobMOT/src"; # The directory where you placed the repository, update "/EXAMPLE" only.
+```
+**`main.cpp`**
+```cpp
+            const string BASE_DIR               = "EXAMPLE/datasets/"; // TODO: Update to the dataset directory on your machine, update "/EXAMPLE" only.
+```
+
+### Configuration Options
+**`config/config.cpp`**
+```cpp
+        # select dataset -> values: kitti or waymo
+        constexpr static const char* dataset_name = "kitti";
+        # select dataset type -> values: training or testing
+        constexpr static const char* dataset = "training";
+        # true/false based on the dataset type.   
+        constexpr static const bool  isTraining                 = true;
+        # To not include state estimation in the results when objects are occluded. (Note: some datasets do not have ground truth for occluded objects)
+        constexpr static const bool  processDetectedObjectsOnly = true;
+        # To run a specific stream. Add a single or multiple stream names to the list, and put true for the `selectedStreamsActivation`
+        constexpr static const bool selectedStreamsActivation   = false; // To run specific stream/s
+        constexpr static const char* selectedStreams[1]   ={"0002"};
+
+....
+        // Define selectedDetector here
+        # Change the detector name, Options:
+        # for kitti (Virconv, Casc, Pointrcnn, Pvcnn, SecondIou),
+        # for waymo (CascWaymo, Ctrl)
+        inline std::unique_ptr<parameters::Detector> selectedDetector = std::make_unique<Virconv>();
+```
+## Citation
+@article{nagy2024robmot,
+  title={RobMOT: Robust 3D Multi-Object Tracking by Observational Noise and State Estimation Drift Mitigation on LiDAR PointCloud},
+  author={Nagy, Mohamed and Werghi, Naoufel and Hassan, Bilal and Dias, Jorge and Khonji, Majid},
+  journal={arXiv preprint arXiv:2405.11536},
+  year={2024}
+}
