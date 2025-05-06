@@ -151,9 +151,11 @@ All directories should be set up correctly to avoid issues when running the soft
         inline std::unique_ptr<parameters::Detector> selectedDetector = std::make_unique<Virconv>();
 ```
 ## Citation
+```
 @article{nagy2024robmot,
   title={RobMOT: Robust 3D Multi-Object Tracking by Observational Noise and State Estimation Drift Mitigation on LiDAR PointCloud},
   author={Nagy, Mohamed and Werghi, Naoufel and Hassan, Bilal and Dias, Jorge and Khonji, Majid},
   journal={arXiv preprint arXiv:2405.11536},
   year={2024}
 }
+```
