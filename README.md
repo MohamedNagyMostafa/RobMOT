@@ -152,10 +152,15 @@ All directories should be set up correctly to avoid issues when running the soft
 ```
 ## Citation
 ```
-@article{nagy2024robmot,
-  title={RobMOT: Robust 3D Multi-Object Tracking by Observational Noise and State Estimation Drift Mitigation on LiDAR PointCloud},
+@ARTICLE{11071990,
   author={Nagy, Mohamed and Werghi, Naoufel and Hassan, Bilal and Dias, Jorge and Khonji, Majid},
-  journal={arXiv preprint arXiv:2405.11536},
-  year={2024}
-}
+  journal={IEEE Transactions on Intelligent Transportation Systems}, 
+  title={RobMOT: 3D Multi-Object Tracking Enhancement Through Observational Noise and State Estimation Drift Mitigation in LiDAR Point Clouds}, 
+  year={2025},
+  volume={},
+  number={},
+  pages={1-13},
+  keywords={3D multi-object tracking;state estimation;Kalman filter;LiDAR point cloud},
+  doi={10.1109/TITS.2025.3581980}}
+
 ```
